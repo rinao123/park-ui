@@ -1,4 +1,4 @@
-# park-ui
+# park3d-ui
 
 ## Project setup
 ```

@@ -4,40 +4,35 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script>
 import ScreenUtil from "@/utils/screenUtil";
+import "@/3d/fixGltf";
 
-export default Vue.extend({
+export default {
   name: "App",
-  components: {},
   mounted() {
-    window.onresize = ScreenUtil.setRem;
     ScreenUtil.setRem();
+    window.onresize = ScreenUtil.setRem;
   }
-});
+}
 </script>
 
 <style lang="scss">
 html {
-  display: flex;
   width: 100%;
   height: 100%;
 }
 
 body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin: 0;
   width: 100%;
   height: 100%;
-  background-color: #333333;
 }
 
 #app {
   display: flex;
-  width: 3840px;
-  height: 1080px;
+  width: 100%;
+  height: 100%;
+  background-color: #333333;
 }
 </style>
