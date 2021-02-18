@@ -43,14 +43,13 @@
       <span class="weather-text">26℃~22℃</span>
     </div>
     <div class="uav">
-      <div class="uav-messages">
-        <span class="uav-message">“xa-001号无人机”投入使用时间</span>
-        <span class="uav-message">2021年1月</span>
-        <span class="uav-message">“xa-001号无人机”投入使用时间</span>
-        <span class="uav-message">2021年1月</span>
-        <span class="uav-message">“PE-001号无人机”暂无异常</span>
-        <span class="uav-message">“PE-002号无人机”暂无异常</span>
-        <span class="uav-message">“PE-003号无人机”暂无异常</span>
+      <div class="uav-messages" id="uav-messages">
+        <span
+          class="uav-message"
+          v-for="(message, index) in messages"
+          :key="index"
+          >{{ message }}</span
+        >
       </div>
       <div class="uav-icons">
         <img class="uav-icon" src="../assets/uav.png" />
@@ -158,7 +157,9 @@
           </div>
         </div>
         <div class="farm-work-record">
-          <span class="farm-work-record-title">农事记录 （沙田柚-001号园）</span>
+          <span class="farm-work-record-title"
+            >农事记录 （沙田柚-001号园）</span
+          >
           <div class="farm-work-record-progress">
             <div class="farm-work-record-progress-column">
               <span class="farm-work-record-progress-text"></span>
@@ -166,55 +167,82 @@
               <span class="farm-work-record-progress-text">农事....</span>
               <div class="farm-work-record-progress-triangle" />
             </div>
-            <div class="farm-work-record-progress-column" :style="{marginLeft: '29px'}">
+            <div
+              class="farm-work-record-progress-column"
+              :style="{ marginLeft: '29px' }"
+            >
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text">农事....</span>
               <div class="farm-work-record-progress-triangle" />
             </div>
-            <div class="farm-work-record-progress-column" :style="{marginLeft: '20px'}">
+            <div
+              class="farm-work-record-progress-column"
+              :style="{ marginLeft: '20px' }"
+            >
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text">农事....</span>
               <span class="farm-work-record-progress-text"></span>
               <div class="farm-work-record-progress-triangle" />
             </div>
-            <div class="farm-work-record-progress-column" :style="{marginLeft: '12px'}">
+            <div
+              class="farm-work-record-progress-column"
+              :style="{ marginLeft: '12px' }"
+            >
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text"></span>
               <div class="farm-work-record-progress-triangle disabled" />
             </div>
-            <div class="farm-work-record-progress-column" :style="{marginLeft: '85px'}">
+            <div
+              class="farm-work-record-progress-column"
+              :style="{ marginLeft: '85px' }"
+            >
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text">农事....</span>
               <div class="farm-work-record-progress-triangle disabled" />
             </div>
-            <div class="farm-work-record-progress-column" :style="{marginLeft: '11px'}">
+            <div
+              class="farm-work-record-progress-column"
+              :style="{ marginLeft: '11px' }"
+            >
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text">农事....</span>
               <span class="farm-work-record-progress-text"></span>
               <div class="farm-work-record-progress-triangle disabled" />
             </div>
-            <div class="farm-work-record-progress-column" :style="{marginLeft: '59px'}">
+            <div
+              class="farm-work-record-progress-column"
+              :style="{ marginLeft: '59px' }"
+            >
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text">农事....</span>
               <div class="farm-work-record-progress-triangle disabled" />
             </div>
-            <div class="farm-work-record-progress-column" :style="{marginLeft: '20px'}">
+            <div
+              class="farm-work-record-progress-column"
+              :style="{ marginLeft: '20px' }"
+            >
               <span class="farm-work-record-progress-text">农事....</span>
               <span class="farm-work-record-progress-text">农事....</span>
               <span class="farm-work-record-progress-text"></span>
               <div class="farm-work-record-progress-triangle disabled" />
             </div>
-            <div class="farm-work-record-progress-column" :style="{marginLeft: '14px'}">
+            <div
+              class="farm-work-record-progress-column"
+              :style="{ marginLeft: '14px' }"
+            >
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text">农事....</span>
               <div class="farm-work-record-progress-triangle disabled" />
             </div>
-            <div class="farm-work-record-progress-column" :style="{marginLeft: '8px'}">
+            <div
+              class="farm-work-record-progress-column"
+              :style="{ marginLeft: '8px' }"
+            >
               <span class="farm-work-record-progress-text"></span>
               <span class="farm-work-record-progress-text">农事....</span>
               <span class="farm-work-record-progress-text"></span>
@@ -243,6 +271,11 @@ import * as echarts from "echarts";
 
 export default {
   name: "MapUI",
+  data() {
+    return {
+      messages: [],
+    };
+  },
   mounted() {
     setTimeout(() => {
       this.initGrowingAreaChart();
@@ -251,6 +284,10 @@ export default {
       this.initTopRightChart();
       this.initAcceptRateChart();
     }, 0);
+    this.startMessageTimer();
+  },
+  beforeDestroy() {
+    this.clearMessageTimer();
   },
   methods: {
     initGrowingAreaChart() {
@@ -285,7 +322,7 @@ export default {
     },
     getGrowingAreaOption() {
       const option = {
-        tooltip: {trigger: "item"},
+        tooltip: { trigger: "item" },
         series: [
           {
             type: "pie",
@@ -295,191 +332,191 @@ export default {
               show: false,
               position: "center",
               formatter: "{d}%\n{b}",
-              fontSize: 24
+              fontSize: 24,
             },
             emphasis: {
               label: {
                 show: true,
                 fontSize: 24,
-                color: "#ffffff"
-              }
+                color: "#ffffff",
+              },
             },
             labelLine: {
-              show: false
+              show: false,
             },
             data: [
-              {value: 19, name: "沙田柚", itemStyle: {color: "#ecc139"}},
-              {value: 22, name: "三红蜜柚", itemStyle: {color: "#926997"}},
-              {value: 29, name: "金柚", itemStyle: {color: "#639a72"}},
-              {value: 20, name: "红宝石", itemStyle: {color: "#b4235d"}},
-              {value: 10, name: "胡柚", itemStyle: {color: "#7eb0c2"}}
-            ]
-          }
-        ]
+              { value: 19, name: "沙田柚", itemStyle: { color: "#ecc139" } },
+              { value: 22, name: "三红蜜柚", itemStyle: { color: "#926997" } },
+              { value: 29, name: "金柚", itemStyle: { color: "#639a72" } },
+              { value: 20, name: "红宝石", itemStyle: { color: "#b4235d" } },
+              { value: 10, name: "胡柚", itemStyle: { color: "#7eb0c2" } },
+            ],
+          },
+        ],
       };
       return option;
     },
     getSalesVolumeOption() {
       const option = {
-        textStyle: {color: "#ffffff"},
-        tooltip: {trigger: "axis"},
+        textStyle: { color: "#ffffff" },
+        tooltip: { trigger: "axis" },
         grid: {
           left: 0,
           right: 0,
           top: 0,
           bottom: 0,
-          containLabel: true
+          containLabel: true,
         },
         legend: {
           icon: "pin",
           textStyle: {
             color: "#ffffff",
           },
-          data: ["沙田柚", "金柚", "三红蜜柚", "红宝石"]
+          data: ["沙田柚", "金柚", "三红蜜柚", "红宝石"],
         },
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: ["2016", "2017", "2018", "2019", "2020"]
+          data: ["2016", "2017", "2018", "2019", "2020"],
         },
         yAxis: {
           type: "value",
           splitLine: {
-            show: false
-          }
+            show: false,
+          },
         },
         series: [
           {
             name: "沙田柚",
             type: "line",
             smooth: true,
-            itemStyle: {color: "#ff9900"},
-            emphasis: {focus: "series"},
-            data: [261, 20, 170, 100, 262]
+            itemStyle: { color: "#ff9900" },
+            emphasis: { focus: "series" },
+            data: [261, 20, 170, 100, 262],
           },
           {
             name: "金柚",
             type: "line",
             smooth: true,
-            itemStyle: {color: "#00ff00"},
-            emphasis: {focus: "series"},
-            data: [70, 110, 70, 56, 150]
+            itemStyle: { color: "#00ff00" },
+            emphasis: { focus: "series" },
+            data: [70, 110, 70, 56, 150],
           },
           {
             name: "三红蜜柚",
             type: "line",
             smooth: true,
-            itemStyle: {color: "#3399ff"},
-            emphasis: {focus: "series"},
-            data: [262, 112, 168, 100, 280]
+            itemStyle: { color: "#3399ff" },
+            emphasis: { focus: "series" },
+            data: [262, 112, 168, 100, 280],
           },
           {
             name: "红宝石",
             type: "line",
             smooth: true,
-            itemStyle: {color: "#ff6666"},
-            emphasis: {focus: "series"},
-            data: [0, 0, 168, 0, 0]
-          }
-        ]
+            itemStyle: { color: "#ff6666" },
+            emphasis: { focus: "series" },
+            data: [0, 0, 168, 0, 0],
+          },
+        ],
       };
       return option;
     },
     getSalesOption() {
       const option = {
-        textStyle: {color: "#ffffff"},
-        tooltip: {trigger: "axis"},
+        textStyle: { color: "#ffffff" },
+        tooltip: { trigger: "axis" },
         grid: {
           left: 0,
           right: 0,
           top: 0,
           bottom: 0,
-          containLabel: true
+          containLabel: true,
         },
         legend: {
           icon: "pin",
           textStyle: {
             color: "#ffffff",
           },
-          data: ["沙田柚", "金柚", "三红蜜柚", "红宝石"]
+          data: ["沙田柚", "金柚", "三红蜜柚", "红宝石"],
         },
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: ["2016", "2017", "2018", "2019", "2020"]
+          data: ["2016", "2017", "2018", "2019", "2020"],
         },
         yAxis: {
           type: "value",
           splitLine: {
-            show: false
-          }
+            show: false,
+          },
         },
         series: [
           {
             name: "沙田柚",
             type: "line",
             smooth: true,
-            itemStyle: {color: "#ff9900"},
-            emphasis: {focus: "series"},
-            data: [261, 20, 170, 100, 262]
+            itemStyle: { color: "#ff9900" },
+            emphasis: { focus: "series" },
+            data: [261, 20, 170, 100, 262],
           },
           {
             name: "金柚",
             type: "line",
             smooth: true,
-            itemStyle: {color: "#00ff00"},
-            emphasis: {focus: "series"},
-            data: [70, 110, 70, 56, 150]
+            itemStyle: { color: "#00ff00" },
+            emphasis: { focus: "series" },
+            data: [70, 110, 70, 56, 150],
           },
           {
             name: "三红蜜柚",
             type: "line",
             smooth: true,
-            itemStyle: {color: "#3399ff"},
-            emphasis: {focus: "series"},
-            data: [262, 112, 168, 100, 280]
+            itemStyle: { color: "#3399ff" },
+            emphasis: { focus: "series" },
+            data: [262, 112, 168, 100, 280],
           },
           {
             name: "红宝石",
             type: "line",
             smooth: true,
-            itemStyle: {color: "#ff6666"},
-            emphasis: {focus: "series"},
-            data: [0, 0, 168, 0, 0]
-          }
-        ]
+            itemStyle: { color: "#ff6666" },
+            emphasis: { focus: "series" },
+            data: [0, 0, 168, 0, 0],
+          },
+        ],
       };
       return option;
     },
     getTopRightOption() {
       const option = {
-          textStyle: {color: "#ffffff"},
-          color: "#65a064",
-          radar: {
-            shape: "circle",
-            axisName: {
-              textStyle: {color: "#ffffff"}
-            },
-            splitLine: {show: false},
-            splitArea: {show: false},
-            indicator: [
-              { name: "施肥", max: 100},
-              { name: "除虫", max: 100},
-              { name: "监测", max: 100},
-              { name: "采收", max: 100},
-              { name: "运输", max: 100},
-              { name: "种植", max: 100}
-            ]
+        textStyle: { color: "#ffffff" },
+        color: "#65a064",
+        radar: {
+          shape: "circle",
+          axisName: {
+            textStyle: { color: "#ffffff" },
           },
-          series: {
-            type: "radar",
-            areaStyle: {},
-            data: [
-              {
-                value: [100, 65, 80, 70, 75, 50]
-              }
-            ]
-          }
+          splitLine: { show: false },
+          splitArea: { show: false },
+          indicator: [
+            { name: "施肥", max: 100 },
+            { name: "除虫", max: 100 },
+            { name: "监测", max: 100 },
+            { name: "采收", max: 100 },
+            { name: "运输", max: 100 },
+            { name: "种植", max: 100 },
+          ],
+        },
+        series: {
+          type: "radar",
+          areaStyle: {},
+          data: [
+            {
+              value: [100, 65, 80, 70, 75, 50],
+            },
+          ],
+        },
       };
       return option;
     },
@@ -490,14 +527,14 @@ export default {
           right: 0,
           top: 0,
           bottom: 0,
-          containLabel: true
+          containLabel: true,
         },
         series: {
           type: "gauge",
           startAngle: 90,
           endAngle: -270,
           pointer: {
-            show: false
+            show: false,
           },
           progress: {
             show: true,
@@ -505,42 +542,75 @@ export default {
             roundCap: true,
             clip: true,
             itemStyle: {
-              color: "#0995f3"
-            }
+              color: "#0995f3",
+            },
           },
           axisLine: {
             lineStyle: {
-              width: 4
-            }
+              width: 4,
+            },
           },
           splitLine: {
-            show: false
+            show: false,
           },
           axisTick: {
-            show: false
+            show: false,
           },
           axisLabel: {
-            show: false
+            show: false,
           },
           data: [
             {
               detail: {
-                offsetCenter: [0, 0]
+                offsetCenter: [0, 0],
               },
-              value: 73
-            }
+              value: 73,
+            },
           ],
           detail: {
             fontSize: 10,
             color: "#66CC33",
-            formatter: "{value}%"
-          }
-        }
+            formatter: "{value}%",
+          },
+        },
       };
       return option;
+    },
+    startMessageTimer() {
+      this.clearMessageTimer();
+      this.messageUpdateCount = 0;
+      this.updateMessage();
+      this.messageTimer = setInterval(this.updateMessage, 1000);
+    },
+    updateMessage() {
+      const messages = [
+        "“xa-001号无人机”投入使用时间",
+        "2021年1月",
+        "“xa-001号无人机”投入使用时间",
+        "2021年1月",
+        "“PE-001号无人机”暂无异常",
+        "“PE-002号无人机”暂无异常",
+        "“PE-003号无人机”暂无异常",
+      ];
+      const index = this.messageUpdateCount % messages.length;
+      if (this.messages.length > 10) {
+        this.messages.shift();
+      }
+      this.messages.push(messages[index]);
+      this.messageUpdateCount++;
+      const dom = document.getElementById("uav-messages");
+      if (dom) {
+        dom.scrollTo({ top: dom.clientHeight });
+      }
+    },
+    clearMessageTimer() {
+      if (this.messageTimer) {
+        clearInterval(this.messageTimer);
+        this.messageTimer = null;
+      }
     }
-  }
-}
+  },
+};
 </script>
 
 <style scoped lang="scss">
@@ -769,6 +839,8 @@ export default {
     top: 220px;
     right: 0;
     display: flex;
+    height: 236px;
+    overflow: hidden;
   }
 
   .uav-messages {
@@ -813,7 +885,7 @@ export default {
     width: 203px;
     height: 148px;
     background-color: rgba(51, 51, 51, 0.7);
-    border: 2px solid #3399CC;
+    border: 2px solid #3399cc;
     border-radius: 4px;
   }
 
@@ -828,7 +900,7 @@ export default {
     margin-top: 18px;
     width: 64px;
     height: 74px;
-    border: 1px solid #FDFDFD;
+    border: 1px solid #fdfdfd;
     object-fit: cover;
   }
 
@@ -868,7 +940,7 @@ export default {
   .suggest-time-value {
     font-family: Microsoft YaHei UI;
     font-size: 18px;
-    color: #0099FF;
+    color: #0099ff;
   }
 
   .suggest-time-unit {
@@ -888,7 +960,7 @@ export default {
     width: 73px;
     height: 25px;
     background-color: #333333;
-    border: 2px solid #3399CC;
+    border: 2px solid #3399cc;
     border-radius: 8px 0 8px 0;
   }
 
@@ -916,7 +988,7 @@ export default {
     justify-content: center;
     width: 65px;
     height: 24px;
-    background-color: #66CC33;
+    background-color: #66cc33;
     border-radius: 4px;
   }
 
@@ -942,7 +1014,7 @@ export default {
     width: 1240px;
     height: 156px;
     background-color: rgba(99, 117, 131, 0.3);
-    border: 2px solid #3399CC;
+    border: 2px solid #3399cc;
     border-radius: 8px;
   }
 
@@ -964,7 +1036,7 @@ export default {
     margin-top: 2px;
     width: 96px;
     height: 91px;
-    border: 1px solid #FDFDFD;
+    border: 1px solid #fdfdfd;
     object-fit: cover;
   }
 
@@ -972,7 +1044,7 @@ export default {
     margin-top: 2px;
     font-family: Microsoft YaHei UI;
     font-size: 16px;
-    color: #FFCC33;
+    color: #ffcc33;
   }
 
   .soil-info {
@@ -994,7 +1066,7 @@ export default {
     display: flex;
     width: 100%;
     height: 22px;
-    background-color: #353F46;
+    background-color: #353f46;
   }
 
   .soil-info-even {
@@ -1065,12 +1137,12 @@ export default {
     height: 0;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-bottom: 17px solid #0099FF;
+    border-bottom: 17px solid #0099ff;
     z-index: 2;
   }
 
   .farm-work-record-progress-triangle.disabled {
-    border-bottom: 17px solid #64BBF0;
+    border-bottom: 17px solid #64bbf0;
   }
 
   .farm-work-record-progress-bar {
@@ -1079,7 +1151,7 @@ export default {
     left: 29px;
     width: 620px;
     height: 2px;
-    background-color: #FCFCFC;
+    background-color: #fcfcfc;
   }
 
   .farm-work-record-progress-bar-active {
@@ -1088,7 +1160,7 @@ export default {
     left: 29px;
     width: 140px;
     height: 2px;
-    background-color: #0099FF;
+    background-color: #0099ff;
   }
 
   .manager {
@@ -1109,7 +1181,7 @@ export default {
     margin-top: 4px;
     width: 88px;
     height: 83px;
-    border: 1px solid #FDFDFD;
+    border: 1px solid #fdfdfd;
     object-fit: cover;
   }
 
@@ -1130,7 +1202,7 @@ export default {
     width: 119px;
     height: 36px;
     background: #333333;
-    border: 2px solid #3399CC;
+    border: 2px solid #3399cc;
     border-radius: 8px 0 8px 0;
   }
 
